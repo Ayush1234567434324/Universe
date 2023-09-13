@@ -5,10 +5,7 @@ const connectDB = require('./db')
 
 connectDB();
 
-app.use("/",(req,res)=>
-{
-    res.json({message:"hello world"});
-});
+app.use('api',require('./routes/admin'))
 const PORT = process.env.PORT
 app.listen(PORT,
     ()=>{
