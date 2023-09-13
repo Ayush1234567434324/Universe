@@ -8,4 +8,4 @@ router.get('/',(req,res)=>{
     }
     res.json(obj);
 })
-model.exports =  router
+module.exports =  router
