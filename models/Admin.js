@@ -9,21 +9,33 @@ const mangaSchema = new mongoose.Schema({
       type: String,
       required: true
     },
+    status:{
+      type: String,
+      required: true
+    }
+    ,
+    genre: {
+      type: [String],
+      default:[]
+    },
     artwork: {
       type: String,
       required: true
     },
     url: {
-      type: String,
-      required: true,
-      unique: true
+      type: [String],
+      default:[]
     },
     id: {
       type: String,
       required: true,
       unique: true
     },
-    likes: {
+    description:{
+      type: String,
+      required: true
+    },
+    rating: {
       type: [String],
       default: []
     },
