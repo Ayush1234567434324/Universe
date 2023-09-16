@@ -16,12 +16,19 @@ router.get('/',(req,res)=>{
 
 
   
-  router.post('/submit-data', (req, res) => {
-    const formData = req.body;
+  router.get('/submit-data', (req, res) => {
+    // Assuming you want to access query parameters
+    const { param1, param2 } = req.query;
   
-    console.log('Received formData:', formData);
+    // Log or process the query parameters as needed
+    console.log('Received query parameters:', param1, param2);
+  
+    // Optionally, perform additional processing or validation here.
+  
+    // Send a response
     res.status(200).json({ message: 'Data received successfully' });
   });
+  
   
 
 module.exports = router;
