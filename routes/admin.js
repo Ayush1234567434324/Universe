@@ -16,13 +16,12 @@ router.get('/',(req,res)=>{
 
 
   
-
-router.post('/submit-data', (req, res) => {
-   
-  const formData = req.body;
+  router.post('/submit-data', (req, res) => {
+    const formData = req.body;
   
-  // Assuming you have a Mongoose model Manga
-    res.send(formData)
-});
+    console.log('Received formData:', formData);
+    res.status(200).json({ message: 'Data received successfully' });
+  });
+  
 
 module.exports = router;
