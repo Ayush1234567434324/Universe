@@ -10,6 +10,19 @@ connectDB();
 app.use(express.json())
 app.use(cors());
 
+
+
+
+
+app.use('/api',require('./routes/admin'))
+
+const PORT = process.env.PORT
+app.listen(PORT,
+    ()=>{
+          console.log(`starting http://localhost:${PORT}`);
+    }
+)
+
 const allowCors = fn => async (req, res) => {
     res.setHeader('Access-Control-Allow-Credentials', true)
     res.setHeader('Access-Control-Allow-Origin', '*')
@@ -33,14 +46,3 @@ const allowCors = fn => async (req, res) => {
   }
   
   module.exports = allowCors(handler)
-
-
-
-app.use('/api',require('./routes/admin'))
-
-const PORT = process.env.PORT
-app.listen(PORT,
-    ()=>{
-          console.log(`starting http://localhost:${PORT}`);
-    }
-)
