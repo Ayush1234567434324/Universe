@@ -2,7 +2,12 @@ const express = require("express");
 const router = express.Router();
 const Manga = require('../models/Admin') 
 const bodyParser = require('body-parser');
+const cors = require('cors'); // Import the cors middleware
+
 router.use(bodyParser.json());
+
+// Use cors middleware
+router.use(cors());
 
 
 router.get('/',(req,res)=>{
