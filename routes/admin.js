@@ -16,19 +16,24 @@ router.get('/',(req,res)=>{
 
 
   
-  router.get('/submit-data', (req, res) => {
-    // Assuming you want to access query parameters
-    const { param1, param2 } = req.query;
+
+router.post('/submit-data', (req, res) => {
+   
+  const formData = req.body;
   
-    // Log or process the query parameters as needed
-    console.log('Received query parameters:', param1, param2);
+  // Assuming you have a Mongoose model Manga
+  const manga = new Manga(formData);
   
-    // Optionally, perform additional processing or validation here.
-  
-    // Send a response
-    res.status(200).json({ message: 'Data received successfully' });
-  });
-  
-  
+  // Save the data to the MongoDB database
+  manga.save()
+    .then(() => {
+      console.log('Data saved successfully:', formData);
+      res.json({ message: 'Data received and saved successfully' });
+    })
+    .catch((error) => {
+      console.error('Error saving data:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    });
+});
 
 module.exports = router;
