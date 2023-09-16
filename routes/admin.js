@@ -4,7 +4,17 @@ const Manga = require('../models/Admin')
 const bodyParser = require('body-parser');
 router.use(bodyParser.json());
 
+router.get('/',(req,res)=>{
+
+res.send({
+  a:"thios"
+})
+
+})
+
+
 router.post('/submit-data', (req, res) => {
+   
   const formData = req.body;
   
   // Assuming you have a Mongoose model Manga
