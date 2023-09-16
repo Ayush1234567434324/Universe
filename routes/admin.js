@@ -4,13 +4,13 @@ const Manga = require('../models/Admin')
 const bodyParser = require('body-parser');
 router.use(bodyParser.json());
 
+
 router.get('/',(req,res)=>{
-
-res.send({
-  a:"thios"
-})
-
-})
+  obj={
+      a:'thios',
+      number:34
+  }
+  res.json(obj);});
 
 
 router.post('/submit-data', (req, res) => {
