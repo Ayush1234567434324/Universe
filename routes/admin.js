@@ -36,4 +36,20 @@ router.post('/submit-data', (req, res) => {
     });
 });
 
+
+
+router.get('/manga', (req, res) => {
+  Manga.find() // Find all manga documents in the collection
+    .then((mangaData) => {
+      res.json(mangaData); // Send the manga data as a JSON response
+    })
+    .catch((error) => {
+      console.error('Error retrieving manga data:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    });
+});
+
+
+
+
 module.exports = router;
