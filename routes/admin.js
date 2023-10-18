@@ -49,6 +49,25 @@ router.get('/manga', (req, res) => {
     });
 });
 
+router.get('/manga/:id', (req, res) => {
+  const mangaId = req.params.id; // Get the manga ID from the URL parameter
+
+  Manga.findById(mangaId) // Find the manga document with the specified ID
+    .then((mangaData) => {
+      if (mangaData) {
+        res.json(mangaData); // Send the manga data as a JSON response
+      } else {
+        res.status(404).json({ error: 'Manga not found' });
+      }
+    })
+    .catch((error) => {
+      console.error('Error retrieving manga data:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    });
+});
+
+
+
 
 
 
