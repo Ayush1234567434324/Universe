@@ -49,10 +49,11 @@ router.get('/manga', (req, res) => {
     });
 });
 
-router.get('/manga/:id', (req, res) => {
-  const mangaId = req.params.id; // Get the manga ID from the URL parameter
+router.get('/:title/manga', (req, res) => {
+  const mangaTitleParam = req.params.title; // Get the manga title from the URL parameter
+  const mangaTitle = mangaTitleParam.replace(/-/g, ' '); // Replace dashes with spaces
 
-  Manga.findById(mangaId) // Find the manga document with the specified ID
+  Manga.findOne({ title: mangaTitle }) // Find the manga document with the specified title
     .then((mangaData) => {
       if (mangaData) {
         res.json(mangaData); // Send the manga data as a JSON response
