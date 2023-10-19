@@ -37,11 +37,26 @@ router.post('/submit-data', (req, res) => {
 });
 
 
-
 router.get('/manga', (req, res) => {
-  Manga.find() // Find all manga documents in the collection
+  Manga.find()
     .then((mangaData) => {
-      res.json(mangaData); // Send the manga data as a JSON response
+      const titles = mangaData.map((manga) => manga.title.replace(/ /g, '').toLowerCase());
+      res.json(mangaData);
+      // Iterate through the titles and define a route for each one
+      titles.forEach((title) => {
+        router.get(`/${title}/manga`, (req, res) => {
+          // Find the manga data for this title
+          const manga = mangaData.find((manga) => manga.title.replace(/ /g, '').toLowerCase() === title);
+          if (manga) {
+            res.json(manga);
+          } else {
+            res.status(404).json({ error: 'Manga not found' });
+          }
+        });
+      });
+
+    
+     
     })
     .catch((error) => {
       console.error('Error retrieving manga data:', error);
@@ -49,23 +64,7 @@ router.get('/manga', (req, res) => {
     });
 });
 
-router.get('/:title/manga', (req, res) => {
-  const mangaTitleParam = req.params.title; // Get the manga title from the URL parameter
-  const mangaTitle = mangaTitleParam.replace(/-/g, ' '); // Replace dashes with spaces
 
-  Manga.findOne({ title: mangaTitle }) // Find the manga document with the specified title
-    .then((mangaData) => {
-      if (mangaData) {
-        res.json(mangaData); // Send the manga data as a JSON response
-      } else {
-        res.status(404).json({ error: 'Manga not found' });
-      }
-    })
-    .catch((error) => {
-      console.error('Error retrieving manga data:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    });
-});
 
 
 
