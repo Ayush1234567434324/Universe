@@ -119,7 +119,7 @@ router.post('/send-email', async (req, res) => {
     text: otpString, 
     html: `<p style="font-size:80px">${otpString}</p>`,
   };
-
+  console.log(otpString)
  
   const user = await Username.findOne({ email });
   if (user) {
@@ -160,11 +160,14 @@ router.post('/verify', async (req, res) => {
       httpOnly: true,
       maxAge: 604800000000,
       domain: 'localhost', // Change this to match your domain
+      sameSite: 'None', // Set the SameSite attribute to "None"
+      secure: true, // Make sure to set this for secure (HTTPS) websites
     });
+    
     
     res.setHeader('Set-Cookie', userCookie);
 
-    res.status(200).json({ message: 'OTP is correct' });
+    res.status(200).json({ message: user});
   } else {
     res.status(400).json({ message: 'Incorrect OTP' });
   }
