@@ -38,7 +38,7 @@ app.use('/pdf/:id', (req, res) => {
   
   
 app.use('/api',require('./routes/admin'))
-app.use('/manga',require('./routes/chapter'))
+
 const PORT = process.env.PORT
 app.listen(PORT,
     ()=>{

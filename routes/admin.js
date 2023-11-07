@@ -92,7 +92,7 @@ router.get('/manga', (req, res) => {
 });
 
 
-router.get('/test', async (req, res) => {
+/*router.get('/test', async (req, res) => {
   try {
     const manga = await Manga.findById('651b1e1bca01158798105fb6').exec();
 
@@ -192,7 +192,7 @@ router.get('/test', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
+*/
 
 
 
