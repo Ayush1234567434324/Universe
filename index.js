@@ -12,9 +12,9 @@ app.use(cors());
 
 const request = require('request');
 
-app.use('/pdf/:id', (req, res) => {
+app.use('/pdf', (req, res) => {
   // Get the 'id' parameter from the request URL
-  const id = req.params.id;
+  const id = '10TI5xrc4heHV1bFeeXUPlyMNEBfs1WCX';
 
   // Create the Google Drive link with the provided 'id'
   const googleDriveLink = `https://drive.google.com/file/d/${id}/view`;
