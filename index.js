@@ -21,6 +21,7 @@ app.use('/pdf/:id', (req, res) => {
 
   // Extract the file ID from the Google Drive link
   const fileId = googleDriveLink.match(/\/d\/(.+?)\//);
+  console.log(fileId);
   if (fileId && fileId[1]) {
       const directDownloadLink = `https://drive.google.com/uc?id=${fileId[1]}`;
 
