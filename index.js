@@ -12,7 +12,7 @@ app.use(cors());
 
 const request = require('request');
 
-app.get('/pdf/:id', (req, res) => {
+app.use('/pdf/:id', (req, res) => {
   // Get the 'id' parameter from the request URL
   const id = req.params.id;
 
