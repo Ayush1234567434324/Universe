@@ -20,7 +20,7 @@ app.use('/pdf/:id', (req, res) => {
     const googleDriveLink = `https://drive.google.com/file/d/${id}/view`;
   
     // Set the response headers to indicate a PDF file
-    res.setHeader('Content-Type', 'application/pdf');
+    
   
     // Extract the file ID from the Google Drive link
     const fileId = googleDriveLink.match(/\/d\/(.+?)\//);
