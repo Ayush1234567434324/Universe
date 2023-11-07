@@ -14,7 +14,7 @@ app.use(cors());
 
 
 app.use('/pdf', (req, res) => {
-  const googleDriveLink = 'https://drive.google.com/file/d/10TI5xrc4heHV1bFeeXUPlyMNEBfs1WCX/view';
+  const googleDriveLink = 'https://drive.google.com/file/d/1oWm--awbX0cYscaG99fFKwHwrzV7vwfs/view';
 
   // Extract the file ID from the Google Drive link
   const fileId = googleDriveLink.match(/\/d\/(.+?)\//);
