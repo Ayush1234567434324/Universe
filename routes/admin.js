@@ -286,6 +286,33 @@ router.post('/verify', async (req, res) => {
 
 
 
+router.post('/verify2', async (req, res) => {
+  const { email, password } = req.body;
+  const user = await Username.findOne({ email });
+
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (isMatch) {
+    const userCookie = cookie.serialize('userInfo', JSON.stringify(user), {
+      httpOnly: true,
+      maxAge: 604800000000,
+      domain: 'localhost', // Change this to match your domain
+      sameSite: 'None', // Set the SameSite attribute to "None"
+      secure: true, // Make sure to set this for secure (HTTPS) websites
+    });
+    
+    
+    res.setHeader('Set-Cookie', userCookie);
+
+    res.status(200).json({ message: user});
+  } else {
+    res.status(400).json({ message: 'Incorrect OTP' });
+  }
+});
+
 
 
 
