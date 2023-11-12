@@ -200,7 +200,7 @@ router.get('/manga', (req, res) => {
 
 
 router.post('/send-email', async (req, res) => {
-  const { email } = req.body;
+  const { name,email,password,country,mobile } = req.body;
 
   const transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -231,9 +231,15 @@ router.post('/send-email', async (req, res) => {
     user.otp = hashedOTP; 
     await user.save();
   } else {
+
+    const hashedPassword = await bcrypt.hash(password, 10); 
     const newUser = new Username({
+      name,
       email,
       otp: hashedOTP, 
+      password:hashedPassword,
+      country,
+      mobile
     });
     await newUser.save();
   }
