@@ -10,37 +10,29 @@ app.use(express.json())
 app.use(cors());
 
 
-const request = require('request');
+const axios = require('axios');
 
 
 
-app.use('/pdf/:id', (req, res) => {
-  const id = req.params.id;
-  const googleDriveLink = `https://drive.google.com/file/d/${id}/view`;
-  const fileId = googleDriveLink.match(/\/d\/(.+?)\//);
+app.get('/pdf/:fileId', async (req, res) => {
+  const fileId = req.params.fileId;
 
-  if (fileId && fileId[1]) {
-    const directDownloadLink = `https://drive.google.com/uc?id=${fileId[1]}`;
-
-    // Set the response headers to indicate a PDF file
-    res.setHeader('Content-Type', 'application/pdf');
-
-    // Use the request library to make a request to the direct download link
-    const pdfRequest = request(directDownloadLink);
-
-    // Handle errors
-    pdfRequest.on('error', (err) => {
-      console.error('Error fetching PDF:', err);
-      res.status(500).send('Error fetching PDF');
+  try {
+    const response = await axios({
+      method: 'GET',
+      url: `https://drive.google.com/uc?export=download&id=${fileId}`,
+      responseType: 'stream',
     });
 
-    // Pipe the PDF stream to the response in chunks
-    pdfRequest.pipe(res);
-  } else {
-    res.status(500).send('Invalid Google Drive link');
+    res.setHeader('Content-Disposition', `attachment; filename=file.pdf`);
+    res.setHeader('Content-Type', response.headers['content-type']);
+
+    response.data.pipe(res);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error occurred while downloading the file');
   }
 });
-
 
   
  
