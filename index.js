@@ -12,6 +12,8 @@ app.use(cors());
 
 const request = require('request');
 
+ // Make sure to import the 'request' module
+
 app.use('/pdf/:id', (req, res) => {
   // Get the 'id' parameter from the request URL
   const id = req.params.id;
@@ -23,17 +25,27 @@ app.use('/pdf/:id', (req, res) => {
   const fileId = googleDriveLink.match(/\/d\/(.+?)\//);
   console.log(fileId);
   if (fileId && fileId[1]) {
-      const directDownloadLink = `https://drive.google.com/uc?id=${fileId[1]}`;
+    const directDownloadLink = `https://drive.google.com/uc?id=${fileId[1]}`;
 
-      // Set the response headers to indicate a PDF file
-      res.setHeader('Content-Type', 'application/pdf');
+    // Set the response headers to indicate a PDF file
+    res.setHeader('Content-Type', 'application/pdf');
 
-      // Pipe the direct download link to the response
-      request(directDownloadLink).pipe(res);
+    // Pipe the direct download link to the response
+    const pdfStream = request(directDownloadLink);
+    
+    // Handle errors
+    pdfStream.on('error', (err) => {
+      console.error('Error fetching PDF:', err);
+      res.status(500).send('Error fetching PDF');
+    });
+
+    // Pipe the PDF stream to the response
+    pdfStream.pipe(res);
   } else {
-      res.status(500).send('Invalid Google Drive link');
+    res.status(500).send('Invalid Google Drive link');
   }
 });
+
 
   
  
