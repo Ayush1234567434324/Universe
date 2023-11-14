@@ -100,9 +100,7 @@ router.get('/manga', (req, res) => {
     }
 
     // Push a new item into the url array
-    manga.url.push("10TI5xrc4heHV1bFeeXUPlyMNEBfs1WCX",
-    "1SK_24iBWkezquvm9b__TJfviuAPJ2ZVR"
-    )
+    manga.url.push("1_EFbSpVRrZAovuQ7lPf87vNUjZeW-o72"); // Replace 'newUrl' with the URL you want to push
 
     // Save the updated document
     await manga.save();
@@ -113,6 +111,9 @@ router.get('/manga', (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });*/
+
+
+
 
 
 
