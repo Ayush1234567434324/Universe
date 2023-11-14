@@ -10,56 +10,60 @@ app.use(express.json())
 app.use(cors());
 
 const axios = require('axios');
-const { PDFDocument } = require('pdf-lib');
 const rangeParser = require('range-parser');
-const { pipeline } = require('stream');
 
 app.get('/pdf/:fileId', async (req, res) => {
   const fileId = req.params.fileId;
 
   try {
-    // Download the PDF file from Google Drive
-    const response = await axios({
-      method: 'GET',
-      url: `https://drive.google.com/uc?export=download&id=${fileId}`,
-      responseType: 'arraybuffer', // Make sure to request the file as an array buffer
-    });
-
-    // Create a PDF document from the downloaded buffer
-    const pdfDoc = await PDFDocument.load(response.data);
-
-    // Convert the PDF document to a buffer
-    const pdfBuffer = await pdfDoc.save();
+    // HEAD request to get the file size
+    const headResponse = await axios.head(`https://drive.google.com/uc?export=download&id=${fileId}`);
+    const fileSize = parseInt(headResponse.headers['content-length'], 10);
 
     // Set headers for the response
     res.setHeader('Accept-Ranges', 'bytes');
     res.setHeader('Content-Type', 'application/pdf');
 
-    // Check the file size
-    const fileSize = pdfBuffer.length;
-
     // If the file size exceeds 4 MB, split it into chunks
     if (fileSize > 4 * 1024 * 1024) {
-      const chunks = Math.ceil(fileSize / (4 * 1024 * 1024));
-      res.setHeader('Content-Range', `bytes 0-${fileSize - 1}/${fileSize}`);
-      res.status(206); // Partial Content
+      const rangeHeader = String(req.headers.range || ''); // Ensure rangeHeader is a string
+      const parts = rangeParser(fileSize, rangeHeader);
 
-      for (let i = 0; i < chunks; i++) {
-        const start = i * (4 * 1024 * 1024);
-        const end = Math.min((i + 1) * (4 * 1024 * 1024) - 1, fileSize - 1);
+      if (parts && parts.length > 0) { // Check if parts is defined and not empty
+        const [start, end] = parts[0];
+        res.status(206).set({
+          'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+          'Accept-Ranges': 'bytes',
+          'Content-Length': end - start + 1,
+        });
 
-        // Send each chunk
-        res.write(pdfBuffer.slice(start, end + 1));
+        // Download and pipe the requested chunk
+        const response = await axios({
+          method: 'GET',
+          url: `https://drive.google.com/uc?export=download&id=${fileId}`,
+          headers: {
+            Range: `bytes=${start}-${end}`,
+          },
+          responseType: 'stream',
+        });
+
+        response.data.pipe(res);
+        return;
       }
-    } else {
-      // If the file size is below 4 MB, send the entire file
-      res.status(200);
-      res.setHeader('Content-Length', fileSize);
-      res.write(pdfBuffer);
     }
 
-    // End the response
-    res.end();
+    // If the file size is below 4 MB or parts is undefined, send the entire file
+    const response = await axios({
+      method: 'GET',
+      url: `https://drive.google.com/uc?export=download&id=${fileId}`,
+      responseType: 'stream',
+    });
+
+    res.status(200).set({
+      'Content-Length': fileSize,
+    });
+
+    response.data.pipe(res);
   } catch (error) {
     console.error(error);
     res.status(500).send('Error occurred while downloading the file');
