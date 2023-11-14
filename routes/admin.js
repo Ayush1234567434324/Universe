@@ -244,32 +244,20 @@ const { google } = require('googleapis');
 
 // Initialize Google Drive API
 const auth = new GoogleAuth({
-  keyFile:{
-    "type": "service_account",
-    "project_id": "weebmania",
-    "private_key_id": "acf69a637ab17d853396abfe14bfb13711b391c9",
-    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDbTraMeAQrrokm\nAaynHcfIXyrSV4txbqoauQEvnvIInjOD9YzmpeY0fXQGHNGSwiGwEosWD98PhnOo\nZTQtxmMiCgQEUcrIDjZeafKFV+i777rpXIOUG0a45Ltbta6Rf72gJCUlzQ56d954\nhoCO/Agj4gdgmzlDguSXj3Nq7NNPKifYU2r+ynkZh27SGEexVE8zSQ4OWsxUFaFM\nO/YDlSBTgxQkjxx3Js6p5QsaQOpwZhjMtlTuP2UNyVY0G7Y9Uhq0g3870RJw1dXi\nGBUlnJJ2jOb/4jxRbJ//BAE1M/g8TqcC4wk93A5rLswKNH8IpdNvVxbu6QY1tYPl\ndovjHdzLAgMBAAECggEANdV3Izks0Oo5uW4syyMY0RtnYBXkYXZoZEHoxB9Qy4PG\nIozqxw2PWnA3RG7blRp5eYa7xLElsOJwzrP1II1z9T2fKc5IKF6wwvFf+pKPS174\nM2Ol2vvtGuLvCP6quQWx7zcgNUzGUpLNNinSMgc1GlXYOMMxxdxCL+AjVWqIHoTG\nqQzEHdNvDfHbgo9CyD3TKY/mOTEdPI59bOUZYibgjFDCtPNyqaIjjerJy+tNztny\npedry0OuNk/demcuWwoWyDLmTbmr7+h2xo4B08Z1XEGZd7xP1fz9G3hCarHfI4uQ\nXSkBApuIYoO6EQQF2VtKq+oJKnn3PQCfnF28E9bL9QKBgQD4YGXOo+wbYdxGxXNt\nOxQzflw73pCQJSQ+fnJ2qomcogztiXxTl6m4cGTvIZIVdTnUagLfBL6+vfvjy63w\n+H02rK4RtgGzJRU4wXYhcAxuqSQx8Jthc8fvc7gCoMFVxqxwrD2/P7RxOKqGjAoG\nRLezKwJAEQETy0jMn/pNwemitQKBgQDiCegynJy+LQc2tuqcRBlWeaPrTcncvhmz\npszHcAToSLWeje1Ckvtw2R43mdsdOTzG39LajwmlFB6jZEn0TdrqqWc488Lapute\neEbcK2DQAFC0+YsMgm7UpLQ79PqxdXSTRk4dc1pmgvqXUkrbVxdVDhCaa9LmCzxG\nZp5cazuxfwKBgQCdm/YeiXCC87dnBVa4oruv7Wgz6YiMn7T/HxgdaxxF06MmfI7z\nMJNXYaL7B69+hFO9EcReptEvkrkrlQz8k4JJVoxi2r77YfW0fTcsAsEw244HTqoa\nzfC6ZxEGQeJNPvQfz3yjRpaHHjE/jc+yqJp1TD5yTxgC6oV4q6+W9gz+3QKBgCx6\nhpZu+ujxM1ow5DmbrOC3TuoehHpLbgNL7z/PayfKJvLsOqO/CHtMPgXy4Ir/mFYJ\n9RPM0bkKHH1KXsMUDt/eNdGfJdigv+/2+vqYDpTfewIhmJr9j5GIV2705d/FnQrd\n6sEg0ckaPPVJ3DENEipKejnovbdGvrWbu82zzCtBAoGBAPQLCTNlltdVwtYaIhRY\nXfs3ByTRpJw6Wi4113+eApu+uaaiWbMQx3y2y5Az3Zms0K+hiCXOCt9UmjM/c297\n7MWxM13FFk0ULlM7bZggwNQI4PnbjR2xzvyQD3WP1r4T2hlXFv0pHPwSPyvH6o6y\n4aSwib+lKQEUnGmQM6IrmgjA\n-----END PRIVATE KEY-----\n",
-    "client_email": "weebmania@weebmania.iam.gserviceaccount.com",
-    "client_id": "116523413424415307342",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/weebmania%40weebmania.iam.gserviceaccount.com",
-    "universe_domain": "googleapis.com"
-  }
-  ,
+  keyFile: '/credentials.json',
   scopes: 'https://www.googleapis.com/auth/drive',
 });
 const driveService = google.drive({ version: 'v3', auth });
 
-async function searchFiles(folderId) {
+// Define the searchFiles function
+async function searchFiles(id) {
   const files = [];
 
   let pageToken = null;
   try {
     do {
       const res = await driveService.files.list({
-        q: `'${folderId}' in parents`,  // Use single quotes around folderId
+        q: "'" + id + "' in parents",
         fields: 'nextPageToken, files(id, name, mimeType, size)',
         spaces: 'drive',
         pageSize: 100,
@@ -295,7 +283,6 @@ async function searchFiles(folderId) {
     throw err;
   }
 }
-
 
 // Define the route
 router.get('/check', async (req, res) => {
