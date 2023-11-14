@@ -245,7 +245,7 @@ const { google } = require('googleapis');
 
 // Initialize Google Drive API
 const auth = new GoogleAuth({
-  keyFile: './credentials.json',
+  keyFile: 'credentials.json',
   scopes: 'https://www.googleapis.com/auth/drive',
 });
 const driveService = google.drive({ version: 'v3', auth });
