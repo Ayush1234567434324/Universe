@@ -262,15 +262,14 @@ const auth = new GoogleAuth({
 });
 const driveService = google.drive({ version: 'v3', auth });
 
-// Define the searchFiles function
-async function searchFiles(id) {
+async function searchFiles(folderId) {
   const files = [];
 
   let pageToken = null;
   try {
     do {
       const res = await driveService.files.list({
-        q: "'" + id + "' in parents",
+        q: `'${folderId}' in parents`,  // Use single quotes around folderId
         fields: 'nextPageToken, files(id, name, mimeType, size)',
         spaces: 'drive',
         pageSize: 100,
@@ -296,6 +295,7 @@ async function searchFiles(id) {
     throw err;
   }
 }
+
 
 // Define the route
 router.get('/check', async (req, res) => {
