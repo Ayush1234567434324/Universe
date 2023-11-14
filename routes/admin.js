@@ -91,7 +91,7 @@ router.get('/manga', (req, res) => {
     });
 });
 
-/*router.get('/test', async (req, res) => {
+router.get('/test', async (req, res) => {
   try {
     const manga = await Manga.findById('651b1e1bca01158798105fb6').exec();
 
@@ -100,7 +100,7 @@ router.get('/manga', (req, res) => {
     }
 
     // Push a new item into the url array
-    manga.url.push("1_EFbSpVRrZAovuQ7lPf87vNUjZeW-o72"); // Replace 'newUrl' with the URL you want to push
+    manga.url.push(); // Replace 'newUrl' with the URL you want to push
 
     // Save the updated document
     await manga.save();
@@ -110,7 +110,7 @@ router.get('/manga', (req, res) => {
     console.error('Error:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
-});*/
+});
 
 
 
@@ -237,6 +237,64 @@ router.post('/verify2', async (req, res) => {
 
 
 
+
+
+const { GoogleAuth } = require('google-auth-library');
+const { google } = require('googleapis');
+
+// Initialize Google Drive API
+const auth = new GoogleAuth({
+  keyFile: './routes/credentials.json',
+  scopes: 'https://www.googleapis.com/auth/drive',
+});
+const driveService = google.drive({ version: 'v3', auth });
+
+// Define the searchFiles function
+async function searchFiles(id) {
+  const files = [];
+
+  let pageToken = null;
+  try {
+    do {
+      const res = await driveService.files.list({
+        q: "'" + id + "' in parents",
+        fields: 'nextPageToken, files(id, name, mimeType, size)',
+        spaces: 'drive',
+        pageSize: 100,
+        pageToken: pageToken,
+      });
+
+      // Add the files from the current page to the files array
+      Array.prototype.push.apply(files, res.data.files);
+
+      pageToken = res.data.nextPageToken;
+    } while (pageToken);
+
+    // Log the sorted files (optional)
+    files.forEach(function (file) {
+      console.log('Found file:', file.name, file.id, file.mimeType);
+    });
+
+    // Return the sorted files
+    return files;
+  } catch (err) {
+    // Handle error
+    console.error('Error searching files:', err);
+    throw err;
+  }
+}
+
+// Define the route
+router.get('/check', async (req, res) => {
+  try {
+    const id = '1f2O6hFCLiHP6vGUD95EHYnt-gzh4MOsC'; // Replace with the actual folder ID
+    const files = await searchFiles(id);
+    res.json({ files });
+  } catch (error) {
+    console.error('Error retrieving files:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 
 
