@@ -305,7 +305,23 @@ router.get('/check', async (req, res) => {
   try {
     const id = '14PFUfARlPQsMD2zfDlx4xcRoE_OyfGB_'; // Replace with the actual folder ID
     const files = await searchFiles(id);
+    const customSort = (a, b) => {
+      const regex = /page-(\d+)\.pdf/;
+      const getNumber = (filename) => parseInt(filename.match(regex)[1], 10);
+    
+      const numberA = getNumber(a.name);
+      const numberB = getNumber(b.name);
+    
+      return numberA - numberB;
+    };
+    
+    // Sort files by the numeric part of their names in ascending order
+    files.sort(customSort);
+    
+    // Include the sorted files in the JSON response
     res.json({ files });
+
+ 
   } catch (error) {
     console.error('Error retrieving files:', error);
     res.status(500).json({ error: 'Internal server error' });
