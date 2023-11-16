@@ -23,9 +23,21 @@ const mangaSchema = new mongoose.Schema({
       required: true
     },
     url: {
-      type: [String],
-      default:[]
-    },
+      type: [{
+        key: String,
+        discription:String
+      }],
+      default: []
+    }
+   ,
+   page: {
+    type: {
+     pagefront: String,
+     pageback: String
+    }
+  
+  } 
+    ,
     id: {
       type: String,
       required: true,

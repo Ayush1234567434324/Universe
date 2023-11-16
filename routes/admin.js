@@ -300,11 +300,14 @@ async function searchFiles(id) {
 }
 
 
-// Define the route
+
+
 router.get('/check', async (req, res) => {
   try {
-    const id = '14PFUfARlPQsMD2zfDlx4xcRoE_OyfGB_'; // Replace with the actual folder ID
-    const files = await searchFiles(id);
+    const folderId = req.query.folderId; // Extract folderId from query parameters
+    const files = await searchFiles(folderId);
+    
+    // Rest of your code...
     const customSort = (a, b) => {
       const regex = /page-(\d+)\.pdf/;
       const getNumber = (filename) => parseInt(filename.match(regex)[1], 10);
@@ -319,15 +322,13 @@ router.get('/check', async (req, res) => {
     files.sort(customSort);
     
     // Include the sorted files in the JSON response
-    res.json({ files });
 
- 
+    res.json({ files });
   } catch (error) {
     console.error('Error retrieving files:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 
 
 
