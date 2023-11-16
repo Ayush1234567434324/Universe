@@ -92,26 +92,7 @@ router.get('/manga', (req, res) => {
     });
 });
 
-router.get('/test', async (req, res) => {
-  try {
-    const manga = await Manga.findById('651b1e1bca01158798105fb6').exec();
 
-    if (!manga) {
-      return res.status(404).json({ error: 'Manga not found' });
-    }
-
-    // Push a new item into the url array
-    manga.url.push(); // Replace 'newUrl' with the URL you want to push
-
-    // Save the updated document
-    await manga.save();
-
-    res.json(manga); // Return the updated manga document
-  } catch (err) {
-    console.error('Error:', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
 
 
 
@@ -235,6 +216,53 @@ router.post('/verify2', async (req, res) => {
     res.status(400).json({ message: 'Incorrect OTP' });
   }
 });
+
+
+router.get('/test', async (req, res) => {
+  try {
+    const mangaId = '651b1e1bca01158798105fb6'; // Replace with the actual Manga ID
+    console.log('Finding manga with ID:', mangaId);
+
+    const manga = await Manga.findById(mangaId).exec();
+    console.log('Found manga:', manga);
+
+    if (!manga) {
+      console.log('Manga not found');
+      return res.status(404).json({ error: 'Manga not found' });
+    }
+
+    // Ensure manga.page is initialized
+    manga.page = manga.page || {};
+
+    // Push a new item into the url array
+    manga.url.push(
+      { key: "1HcMdYf9K7iE6xVhyVQ_4PlzTbrvhFUvc", discription: "God of Destruction Premonition" },
+      { key: "1JN5QUf_fwgNuVLW8K7xwjCUcrZPCd5U5", discription: "Goku Defeated" },
+      { key: "1zFK1CRUHxuekC2CbTCHK-8Rf1UKWng-v", discription: "The Rage of Beerus" }
+    );
+
+    // Update the pagefront and pageback properties
+    manga.page.pagefront = "1J7_xI6ytTnFHuLT8Oo0vmgvOdWmcGfSc"; // Replace with the actual URL for the pagefront
+    manga.page.pageback = "1haBoeOqPYvd9y6gE1oYwAV-jIaR-17ZC";   // Replace with the actual URL for the pageback
+
+    // Save the updated document
+    await manga.save();
+    
+    console.log('Manga saved successfully:', manga);
+    res.json(manga); // Return the updated manga document
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+
+
+
+
+
+
 
 
 
