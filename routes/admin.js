@@ -218,7 +218,7 @@ router.post('/verify2', async (req, res) => {
 });
 
 
-router.get('/test', async (req, res) => {
+/*router.get('/test', async (req, res) => {
   try {
     const mangaId = '651b1e1bca01158798105fb6'; // Replace with the actual Manga ID
     console.log('Finding manga with ID:', mangaId);
@@ -254,7 +254,7 @@ router.get('/test', async (req, res) => {
     console.error('Error:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
-});
+});*/
 
 
 
@@ -358,7 +358,35 @@ router.get('/check', async (req, res) => {
   }
 });
 
+router.post("/manga/:mangaId/url/:urlId/chat", async (req, res) => {
+  const mangaId = req.params.mangaId;
+  const urlId = req.params.urlId;
+  const { user, text ,email} = req.body;
 
+  try {
+    const manga = await Manga.findById(mangaId);
+
+    if (!manga) {
+      return res.status(404).json({ error: "Manga not found" });
+    }
+
+    const urlObject = manga.url.find((url) => url.id === urlId);
+
+    if (!urlObject) {
+      return res.status(404).json({ error: "URL not found in manga" });
+    }
+
+    // Push the new chat message into the chat array of the specific URL
+    urlObject.chat.push({ user, text,email });
+
+    await manga.save();
+
+    res.status(201).json(manga);
+  } catch (error) {
+    console.error("Error posting chat message:", error);
+    res.status(500).json({ error: "Error posting chat message" });
+  }
+});
 
 
 
